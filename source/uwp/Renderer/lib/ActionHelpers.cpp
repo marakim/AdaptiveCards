@@ -230,7 +230,14 @@ namespace AdaptiveCards::Rendering::Uwp::ActionHelpers
                                 _In_ IAdaptiveRenderContext* renderContext)
     {
         HString actionSentiment;
-        RETURN_IF_FAILED(adaptiveActionElement->get_Style(actionSentiment.GetAddressOf()));
+        if (adaptiveActionElement != nullptr)
+        {
+            RETURN_IF_FAILED(adaptiveActionElement->get_Style(actionSentiment.GetAddressOf()));
+        }
+        else
+        {
+            UTF8ToHString("default", actionSentiment.GetAddressOf());
+        }
 
         INT32 isSentimentPositive{}, isSentimentDestructive{}, isSentimentDefault{};
 
@@ -435,10 +442,7 @@ namespace AdaptiveCards::Rendering::Uwp::ActionHelpers
             RETURN_IF_FAILED(buttonAsControl->put_IsEnabled(isEnabled));
         }
 
-        if (adaptiveActionElement != nullptr)
-        {
-            RETURN_IF_FAILED(HandleActionStyling(adaptiveActionElement, buttonFrameworkElement.Get(), renderContext));
-        }
+        RETURN_IF_FAILED(HandleActionStyling(adaptiveActionElement, buttonFrameworkElement.Get(), renderContext));
 
         ComPtr<IUIElement> buttonAsUIElement;
         RETURN_IF_FAILED(button.As(&buttonAsUIElement));
